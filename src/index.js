@@ -7,7 +7,7 @@ import {
   getCssStyles,
 } from './utils';
 
-const classCache = [];
+const hashCache = [];
 let options = {
   classes: [],
   hashCount: 5,
@@ -68,7 +68,7 @@ const getExistsClass = (_className) => {
     const className = options.formatClass(hashStr);
     /* console.log('1'); */
     /* let styles = variable.class[_className]; */
-    if (!classCache.includes(className)) {
+    if (!hashCache.includes(className)) {
     /* console.log('2'); */
     /* if (styles) { */
       styles = getStyles(styles);
@@ -85,7 +85,7 @@ const getExistsClass = (_className) => {
       } else {
         styleDom.innerHTML = `${styleDom.innerHTML}\n${content}\n`;
       }
-      classCache.push(className);
+      hashCache.push(className);
     }
     return className;
   }
@@ -108,7 +108,7 @@ const getClass = (_style, _value) => {
   const hashStr = hash(style + value, options.hashCount);
   const className = options.formatClass(hashStr);
   // 如果class已经存在就直接返回
-  if (classCache.includes(className)) {
+  if (hashCache.includes(className)) {
     return className;
   }
 
@@ -123,13 +123,13 @@ const getClass = (_style, _value) => {
     styleDom.id = style;
     styleDom.innerHTML = `\n${content}\n`;
     document.head.appendChild(styleDom);
-    /* 已有classCache数组做判断这里就直接添加样式 */
+    /* 已有hashCache数组做判断这里就直接添加样式 */
   /* } else if (styleDom.innerHTML.indexOf(content) === -1) { */
   } else {
     styleDom.innerHTML = `${styleDom.innerHTML}\n${content}\n`;
   }
   // 存储已经存在class
-  classCache.push(className);
+  hashCache.push(className);
   /* console.log(_style, className); */
   return className;
 };
@@ -162,14 +162,15 @@ const css = (...array) => {
 const classes = (...array) => array.map(arr => getExistsClass(arr));
 
 const pseudo = (_className, pseudo, style) => {
-  const className = `.${_className}:${pseudo}`;
-  if (classCache.includes(className)) {
-    return _className;
+  const selector = `.${_className}:${pseudo}`;
+  const hashStr = hash(selector, options.hashCount);
+  if (hashCache.includes(hashStr)) {
+    return hashStr;
   }
 
-  selector(className, style);
-  classCache.push(className);
-  return _className;
+  selector(selector, style);
+  hashCache.push(hashStr);
+  return hashStr;
 };
 
 const install = (Vue, _options = {}) => {
