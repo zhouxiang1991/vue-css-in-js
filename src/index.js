@@ -8,7 +8,7 @@ import {
 } from './utils';
 
 const classCache = [];
-const options = {
+let options = {
   classes: [],
   hashCount: 5,
   formatClass(hash) {
@@ -173,25 +173,10 @@ const pseudo = (_className, pseudo, style) => {
 };
 
 const install = (Vue, _options = {}) => {
-  if (typeof _options.hashCount === 'number' && options.hashCount) {
-    options.hashCount = _options.hashCount;
-  }
-
-  if (Array.isArray(_options.classes)) {
-    options.classes = _options.classes;
-  }
-
-  if (typeof _options.formatClass === 'function') {
-    options.formatClass = _options.formatClass;
-  }
-
-  if (typeof _options.formatStyle === 'function') {
-    options.formatStyle = _options.formatStyle;
-  }
-
-  if (typeof _options.formatValue === 'function') {
-    options.formatValue = _options.formatValue;
-  }
+  options = {
+    ...options,
+    ..._options,
+  };
 
   Vue.mixin({
     beforeCreate() {
