@@ -50,8 +50,8 @@ const getStyles = (array) => {
 const getStyleText = (styles, flag) => {
   let result = '\n';
   for (const style of styles) {
-    let styleName = flag ? style[0] : kebabcase(options.formatStyle(style[0]));
-    const value = flag ? style[1] : options.formatValue(styleName, style[1]);
+    let styleName = flag ? style[0] : kebabcase(options.formatStyle(style[0], style[1], options));
+    const value = flag ? style[1] : options.formatValue(styleName, style[1], options);
     styleName = addBrowserPrefix(styleName);
     result += `  ${styleName}: ${value};\n`;
   }
@@ -97,7 +97,7 @@ const getClass = (_style, _value) => {
   /* console.log(style); */
   // 根据缩写获取样式全称
   /* style = abbr[style] || style; */
-  style = options.formatStyle(style);
+  style = options.formatStyle(style, _value, options);
   style = kebabcase(style);
   // 如果是纯数字就并且是必须带有单位的就自动加上px
   // 否则原样返回
