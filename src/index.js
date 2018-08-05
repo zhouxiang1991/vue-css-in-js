@@ -171,7 +171,7 @@ const pseudo = (_className, pseudo, style) => {
   return _className;
 };
 
-const install = (Vue, _options) => {
+const install = (Vue, _options = {}) => {
   if (
     typeof _options.className === 'string'
     && options.className.indexOf('hash') !== -1
