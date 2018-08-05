@@ -2,7 +2,8 @@ import {
   camelCase,
   chunk,
   hash,
-  browser,
+  getBrowserPrefix,
+  getCssStyles,
 } from './utils';
 
 const classCache = [];
@@ -21,8 +22,8 @@ const options = {
   },
 };
 
-const browserPrefiex = browser.getBrowserPrefix();
-const styles = browser.getCssStyles();
+const browserPrefiex = getBrowserPrefix();
+const styles = getCssStyles();
 
 const addBrowserPrefix = (_prop) => {
   let prop = camelCase(_prop);
