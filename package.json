@@ -1,0 +1,48 @@
+{
+  "name": "vue-eassy-css",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "author": "zhouxiang1991 <zhouxiang1991@caifujilu.com>",
+  "scripts": {
+    "compile": "babel src -d dist"
+  },
+  "license": "MIT",
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-runtime"
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "browser" :true
+    },
+    "extends": [
+      "node-project"
+    ],
+    "globals": {
+      "describe": true,
+      "it": true
+    }
+  },
+  "eslintIgnore": [],
+  "author": "zhouxiang",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/runtime": "^7.0.0-beta.42"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.38",
+    "@babel/core": "^7.0.0-beta.38",
+    "@babel/node": "^7.0.0-beta.38",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.38",
+    "@babel/preset-env": "^7.0.0-beta.38",
+    "@babel/register": "^7.0.0-beta.38",
+    "babel-eslint": "^8.0.3",
+    "eslint": "^4.15.0",
+    "eslint-config-node-project": "https://github.com/zhouxiang1991/eslint-config-node-project.git"
+  }
+}
