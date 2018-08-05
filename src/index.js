@@ -11,7 +11,6 @@ const classCache = [];
 const options = {
   classes: [],
   hashCount: 5,
-  namespace: '$css',
   formatClass(hash) {
     return hash;
   },
@@ -191,12 +190,10 @@ const install = (Vue, _options = {}) => {
 
   Vue.mixin({
     beforeCreate() {
-      this[options.namespace] = {
-        css,
-        classes,
-        pseudo,
-        selector,
-      };
+      this.$css = css;
+      this.$class = classes;
+      this.$pseudo = pseudo;
+      this.$selector = selector;
     },
   });
 };
