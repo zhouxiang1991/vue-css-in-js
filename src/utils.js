@@ -25,8 +25,7 @@ const stringHash = (str) => {
 export const hash = (_string, _length = 5) => {
   const string = String(_string);
   const length = isNaN(_length) ? 5 : parseInt(_length, 10);
-  let hash = stringHash(string).toString(36).substr(0, length);
-  hash = `_${hash}`;
+  const hash = stringHash(string).toString(36).substr(0, length);
   return hash;
 };
 

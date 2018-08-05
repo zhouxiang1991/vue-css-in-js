@@ -12,7 +12,7 @@ const options = {
   classes: [],
   hashCount: 5,
   formatClass(hash) {
-    return hash;
+    return `-${hash}`;
   },
   formatValue(style, value, options) {
     return value;
@@ -137,7 +137,7 @@ const getClass = (_style, _value) => {
 const selector = (_selector, style) => {
   let styles = getStyles(style);
   const hashStr = hash(_selector, options.hashCount);
-  const selector = options.formatClass(hashStr, options.hashCount);
+  const selector = options.formatClass(hashStr);
   let styleDom = document.getElementById(selector);
   styles = getStyleText(styles);
   styles = styles.replace(/[{}]+/g, '');
@@ -173,19 +173,24 @@ const pseudo = (_className, pseudo, style) => {
 };
 
 const install = (Vue, _options = {}) => {
-  if (
-    typeof _options.className === 'string'
-    && options.className.indexOf('hash') !== -1
-  ) {
-    options.className = _options.className;
-  }
-
-  if (typeof _options.namespace === 'string') {
-    options.namespace = _options.namespace;
-  }
-
   if (typeof _options.hashCount === 'number' && options.hashCount) {
     options.hashCount = _options.hashCount;
+  }
+
+  if (Array.isArray(_options.classes)) {
+    options.classes = _options.classes;
+  }
+
+  if (typeof _options.formatClass === 'function') {
+    options.formatClass = _options.formatClass;
+  }
+
+  if (typeof _options.formatStyle === 'function') {
+    options.formatStyle = _options.formatStyle;
+  }
+
+  if (typeof _options.formatValue === 'function') {
+    options.formatValue = _options.formatValue;
   }
 
   Vue.mixin({
