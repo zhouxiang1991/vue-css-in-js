@@ -26,8 +26,7 @@ const browserPrefiex = getBrowserPrefix();
 const styles = getCssStyles();
 
 const addBrowserPrefix = (_prop) => {
-  let prop = kebabcase(_prop);
-  prop = `${browserPrefiex.css}${prop}`;
+  const prop = `${browserPrefiex.css}${_prop}`;
   if (styles.indexOf(prop) !== -1) {
     return prop;
   }
@@ -35,6 +34,9 @@ const addBrowserPrefix = (_prop) => {
 };
 
 const getStyles = (array) => {
+  if (!Array.isArray(array)) {
+    return [];
+  }
   let styles = array;
   if (styles.length > 2) {
     styles = chunk(styles, 2);
@@ -50,32 +52,24 @@ const getStyles = (array) => {
 const getStyleText = (styles, flag) => {
   let result = '\n';
   for (const style of styles) {
-    let styleName = flag ? style[0] : kebabcase(options.formatStyle(style[0], style[1], options));
-    const value = flag ? style[1] : options.formatValue(styleName, style[1], options);
-    styleName = addBrowserPrefix(styleName);
-    result += `  ${styleName}: ${value};\n`;
+    const styleName = flag
+      ? style[0]
+      : addBrowserPrefix(kebabcase(options.formatStyle(style[0], style[1], options)));
+    const styleValue = flag ? style[1] : options.formatValue(styleName, style[1], options);
+    result += `  ${styleName}: ${styleValue};\n`;
   }
   return `{${result}}`;
 };
 const getExistsClass = (_className) => {
-  /* console.log(_className); */
-  /*
-   * console.log(className)   */
   let styles = options.classes[_className];
-  /* console.log(className); */
   if (styles) {
-    const hashStr = hash(styles + _className, options.hashCount);
-    const className = options.formatClass(hashStr);
-    /* console.log('1'); */
-    /* let styles = variable.class[_className]; */
-    if (!hashCache.includes(className)) {
-    /* console.log('2'); */
-    /* if (styles) { */
+    let hashStr = hash(styles + _className, options.hashCount);
+    hashStr = options.formatClass(hashStr);
+    if (!hashCache.includes(hashStr)) {
       styles = getStyles(styles);
-      let styleDom = document.getElementById('custom-class');
       let content = getStyleText(styles);
-      content = `\n.${className} ${content}\n`;
-      /* console.log(content); */
+      content = `\n.${hashStr} ${content}\n`;
+      let styleDom = document.getElementById('custom-class');
       if (!styleDom) {
         styleDom = document.createElement('style');
         styleDom.type = 'text/css';
@@ -85,71 +79,55 @@ const getExistsClass = (_className) => {
       } else {
         styleDom.innerHTML = `${styleDom.innerHTML}\n${content}\n`;
       }
-      hashCache.push(className);
+      hashCache.push(hashStr);
     }
-    return className;
+    return hashStr;
   }
   return _className;
 };
 
 const getClass = (_style, _value) => {
-  let style = _style;
-  /* console.log(style); */
-  // 根据缩写获取样式全称
-  /* style = abbr[style] || style; */
-  style = options.formatStyle(style, _value, options);
-  style = kebabcase(style);
-  // 如果是纯数字就并且是必须带有单位的就自动加上px
-  // 否则原样返回
-  /* const value = getStyleValue(style, _value); */
+  const style = kebabcase(options.formatStyle(_style, _value, options));
   const value = options.formatValue(style, _value, options);
-  // 设置类名和5位哈希码作为唯一标示
-  /* const className = `${style}-${hash(style + value)}`; */
-  const hashStr = hash(style + value, options.hashCount);
-  const className = options.formatClass(hashStr);
-  // 如果class已经存在就直接返回
-  if (hashCache.includes(className)) {
-    return className;
+  let hashStr = hash(style + value, options.hashCount);
+  hashStr = options.formatClass(hashStr);
+  if (hashCache.includes(hashStr)) {
+    return hashStr;
   }
 
-  // 获取样式文本内容
-  let content = getStyleText([[style, value]], true);
-  content = `.${className} ${content}`;
+  let styleText = getStyleText([[style, value]], true);
+  styleText = `.${hashStr} ${styleText}`;
 
   let styleDom = document.getElementById(style);
   if (!styleDom) {
     styleDom = document.createElement('style');
     styleDom.type = 'text/css';
     styleDom.id = style;
-    styleDom.innerHTML = `\n${content}\n`;
+    styleDom.innerHTML = `\n${styleText}\n`;
     document.head.appendChild(styleDom);
-    /* 已有hashCache数组做判断这里就直接添加样式 */
-  /* } else if (styleDom.innerHTML.indexOf(content) === -1) { */
   } else {
-    styleDom.innerHTML = `${styleDom.innerHTML}\n${content}\n`;
+    styleDom.innerHTML = `${styleDom.innerHTML}\n${styleText}\n`;
   }
-  // 存储已经存在class
-  hashCache.push(className);
-  /* console.log(_style, className); */
-  return className;
+  hashCache.push(hashStr);
+  return hashStr;
 };
 
-const selector = (_selector, style) => {
-  let styles = getStyles(style);
-  const hashStr = hash(_selector, options.hashCount);
-  const selector = options.formatClass(hashStr);
-  let styleDom = document.getElementById(selector);
+const selector = (_selector, _styles) => {
+  let styles = getStyles(_styles);
+  let hashStr = hash(_selector, options.hashCount);
+  hashStr = options.formatClass(hashStr);
   styles = getStyleText(styles);
   styles = styles.replace(/[{}]+/g, '');
-  const content = `\n${_selector} {${styles}}\n`;
+  styles = `\n${_selector} {${styles}}\n`;
+  let styleDom = document.getElementById(hashStr);
   if (!styleDom) {
     styleDom = document.createElement('style');
     styleDom.type = 'text/css';
-    styleDom.id = selector;
-    styleDom.innerHTML = content;
+    styleDom.id = hashStr;
+    styleDom.innerHTML = styles;
     document.head.appendChild(styleDom);
   } else {
-    styleDom.innerHTML = content;
+    styleDom.innerHTML = styles;
   }
 
   return '';
@@ -157,19 +135,33 @@ const selector = (_selector, style) => {
 
 const css = (...array) => {
   const styles = getStyles(array);
-  return styles.map(style => getClass(style[0], style[1]));
+  return styles.map(([style, value]) => getClass(style, value));
 };
+
 const classes = (...array) => array.map(arr => getExistsClass(arr));
 
-const pseudo = (_className, pseudo, style) => {
-  const pseduoClass = `.${_className}:${pseudo}`;
-  const hashStr = hash(pseduoClass, options.hashCount);
+const pseudo = (_className, pseudo, _styles) => {
+  let hashStr = hash(`.${_className}:${pseudo}`, options.hashCount);
+  hashStr = options.formatClass(hashStr);
   if (hashCache.includes(hashStr)) {
     return hashStr;
   }
 
-  selector(pseduoClass, style);
-  hashCache.push(hashStr);
+  let styles = getStyles(_styles);
+  styles = getStyleText(styles);
+  styles = styles.replace(/[{}]+/g, '');
+  styles = `\n.${hashStr}:${pseudo} {${styles}}\n`;
+  let styleDom = document.getElementById(hashStr);
+  if (!styleDom) {
+    styleDom = document.createElement('style');
+    styleDom.type = 'text/css';
+    styleDom.id = hashStr;
+    styleDom.innerHTML = styles;
+    document.head.appendChild(styleDom);
+  } else {
+    styleDom.innerHTML = styles;
+  }
+
   return hashStr;
 };
 
