@@ -162,13 +162,13 @@ const css = (...array) => {
 const classes = (...array) => array.map(arr => getExistsClass(arr));
 
 const pseudo = (_className, pseudo, style) => {
-  const selector = `.${_className}:${pseudo}`;
-  const hashStr = hash(selector, options.hashCount);
+  const pseduoClass = `.${_className}:${pseudo}`;
+  const hashStr = hash(pseduoClass, options.hashCount);
   if (hashCache.includes(hashStr)) {
     return hashStr;
   }
 
-  selector(selector, style);
+  selector(pseduoClass, style);
   hashCache.push(hashStr);
   return hashStr;
 };
