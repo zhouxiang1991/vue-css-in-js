@@ -1,5 +1,6 @@
 import {
-  camelCase,
+  /* camelCase, */
+  kebabcase,
   chunk,
   hash,
   getBrowserPrefix,
@@ -26,7 +27,7 @@ const browserPrefiex = getBrowserPrefix();
 const styles = getCssStyles();
 
 const addBrowserPrefix = (_prop) => {
-  let prop = camelCase(_prop);
+  let prop = kebabcase(_prop);
   prop = `${browserPrefiex.css}${prop}`;
   if (styles.indexOf(prop) !== -1) {
     return prop;
@@ -50,8 +51,7 @@ const getStyles = (array) => {
 const getStyleText = (styles, flag) => {
   let result = '\n';
   for (const style of styles) {
-    let styleName = flag ? style[0] : options.formatStyle(style[0]);
-    styleName = camelCase(styleName);
+    let styleName = flag ? style[0] : kebabcase(options.formatStyle(style[0]));
     const value = flag ? style[1] : options.formatValue(styleName, style[1]);
     styleName = addBrowserPrefix(styleName);
     result += `  ${styleName}: ${value};\n`;
@@ -99,7 +99,7 @@ const getClass = (_style, _value) => {
   // 根据缩写获取样式全称
   /* style = abbr[style] || style; */
   style = options.formatStyle(style);
-  style = camelCase(style);
+  style = kebabcase(style);
   // 如果是纯数字就并且是必须带有单位的就自动加上px
   // 否则原样返回
   /* const value = getStyleValue(style, _value); */

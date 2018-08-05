@@ -120,3 +120,5 @@ export const chunk = (array, size) => {
   }
   return result;
 };
+
+export const kebabcase = str => str.replace(/(?!^)([A-Z\u00C0-\u00D6])/g, match => `-${match.toLowerCase()}`);
