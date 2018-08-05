@@ -1,10 +1,10 @@
 {
   "name": "vue-eassy-css",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "author": "zhouxiang1991 <zhouxiang1991@caifujilu.com>",
   "scripts": {
-    "compile": "babel src -d dist"
+    "compile": "babel src -d lib"
   },
   "license": "MIT",
   "babel": {
