@@ -1,5 +1,4 @@
 import {
-  /* camelCase, */
   kebabcase,
   chunk,
   hash,
@@ -12,12 +11,12 @@ let options = {
   classes: [],
   hashCount: 5,
   formatClass(hash) {
-    return `-${hash}`;
+    return `_${hash}`;
   },
-  formatValue(style, value, options) {
+  formatValue(style, value) {
     return value;
   },
-  formatStyle(style, value, options) {
+  formatStyle(style) {
     return style;
   },
 };
