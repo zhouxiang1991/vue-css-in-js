@@ -23,7 +23,6 @@ let options = {
 
 const browserPrefiex = getBrowserPrefix();
 const styles = getCssStyles();
-
 const addBrowserPrefix = (_prop) => {
   const prop = `${browserPrefiex.css}${_prop}`;
   if (styles.indexOf(prop) !== -1) {
@@ -33,9 +32,10 @@ const addBrowserPrefix = (_prop) => {
 };
 
 const getStyles = (array) => {
-  if (!Array.isArray(array)) {
-    return [];
+  if (!array || !array.length) {
+    return null;
   }
+
   let styles = array;
   if (styles.length > 2) {
     styles = chunk(styles, 2);
@@ -113,6 +113,10 @@ const getClass = (_style, _value) => {
 
 const selector = (_selector, _styles) => {
   let styles = getStyles(_styles);
+  if (!styles) {
+    return '';
+  }
+
   let hashStr = hash(_selector, options.hashCount);
   hashStr = options.formatClass(hashStr);
   styles = getStyleText(styles);
@@ -134,6 +138,10 @@ const selector = (_selector, _styles) => {
 
 const css = (...array) => {
   const styles = getStyles(array);
+  if (!styles) {
+    return '';
+  }
+
   return styles.map(([style, value]) => getClass(style, value));
 };
 
@@ -147,6 +155,10 @@ const pseudo = (_className, pseudo, _styles) => {
   }
 
   let styles = getStyles(_styles);
+  if (!styles) {
+    return '';
+  }
+
   styles = getStyleText(styles);
   styles = styles.replace(/[{}]+/g, '');
   styles = `\n.${hashStr}:${pseudo} {${styles}}\n`;
@@ -162,6 +174,30 @@ const pseudo = (_className, pseudo, _styles) => {
   }
 
   return hashStr;
+};
+
+const animation = (name, content) => {
+  if (hashCache.includes(name)) {
+    return name;
+  }
+
+  let text = '';
+  const keys = Object.keys(content);
+  for (const key of keys) {
+    const styles = getStyles(content[key]);
+    const styleText = getStyleText(styles);
+    text += `\n${key} ${styleText}`;
+  }
+
+  text = `@keyframes ${name} {\n${text}\n}`;
+
+  const styleDom = document.createElement('style');
+  styleDom.type = 'text/css';
+  styleDom.id = name;
+  styleDom.innerHTML = text;
+  document.head.appendChild(styleDom);
+  hashCache.push(name);
+  return name;
 };
 
 const install = (Vue, _options = {}) => {
@@ -186,4 +222,5 @@ export default {
   classes,
   pseudo,
   selector,
+  animation,
 };
