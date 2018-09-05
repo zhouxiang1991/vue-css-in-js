@@ -86,8 +86,9 @@ const getExistsClass = (_className) => {
 };
 
 const getClass = (_style, _value) => {
-  const style = kebabcase(options.formatStyle(_style, _value, options));
+  let style = kebabcase(options.formatStyle(_style, _value, options));
   const value = options.formatValue(style, _value, options);
+  style = addBrowserPrefix(style);
   let hashStr = hash(style + value, options.hashCount);
   hashStr = options.formatClass(hashStr);
   if (hashCache.includes(hashStr)) {
