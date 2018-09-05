@@ -2,11 +2,11 @@
   "name": "vue-css-in-js",
   "version": "1.0.0",
   "main": "lib/index.js",
-  "author": "zhouxiang1991 <zhouxiang1991@caifujilu.com>",
+  "author": "zhouxiang",
   "scripts": {
     "compile": "babel src -d lib"
   },
-  "license": "MIT",
+  "license": "ISC",
   "babel": {
     "presets": [
       "@babel/preset-env"
@@ -18,7 +18,7 @@
   "eslintConfig": {
     "env": {
       "node": true,
-      "browser" :true
+      "browser": true
     },
     "extends": [
       "node-project"
@@ -29,9 +29,8 @@
     }
   },
   "eslintIgnore": [],
-  "author": "zhouxiang",
-  "license": "ISC",
   "dependencies": {
+    "vue-css-in-js": "https://github.com/zhouxiang1991/vue-css-in-js.git"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.38",
