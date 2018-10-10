@@ -60,11 +60,14 @@ const getStyleText = (styles, flag) => {
   return `{${result}}`;
 };
 
-const getExistsClass = (_className) => {
+const getExistsClass = (_className, transToHash = true) => {
   let styles = options.classes[_className];
   if (styles) {
-    let hashStr = hash(styles + _className, options.hashCount);
-    hashStr = options.formatClass(hashStr);
+    let hashStr = _className;
+    if (transToHash) {
+      hashStr = hash(styles + _className, options.hashCount);
+      hashStr = options.formatClass(hashStr);
+    }
     if (!hashCache.includes(hashStr)) {
       styles = getStyles(styles);
       let content = getStyleText(styles);
@@ -148,6 +151,7 @@ export const css = (...array) => {
 };
 
 export const classes = (...array) => array.map(arr => getExistsClass(arr));
+export const preClass = (...array) => array.map(arr => getExistsClass(arr, false));
 
 export const pseudo = (_className, pseudo, _styles) => {
   let hashStr = hash(`.${_className}:${pseudo}`, options.hashCount);
@@ -226,4 +230,5 @@ export default {
   pseudo,
   selector,
   animation,
+  preClass,
 };
