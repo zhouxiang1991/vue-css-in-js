@@ -1,12 +1,6 @@
-import {
-  kebabcase,
-  chunk,
-  hash,
-  getBrowserPrefix,
-  getCssStyles,
-} from './utils';
+import { kebabcase, chunk, hash, getBrowserPrefix, getCssStyles } from './utils';
 
-const hashCache = [];
+const classCache = new Set();
 let options = {
   classes: [],
   hashCount: 5,
@@ -68,7 +62,7 @@ const getExistsClass = (_className, transToHash = true) => {
       hashStr = hash(styles + _className, options.hashCount);
       hashStr = options.formatClass(hashStr);
     }
-    if (!hashCache.includes(hashStr)) {
+    if (!classCache.has(hashStr)) {
       styles = getStyles(styles);
       let content = getStyleText(styles);
       content = `\n.${hashStr} ${content}\n`;
@@ -82,7 +76,7 @@ const getExistsClass = (_className, transToHash = true) => {
       } else {
         styleDom.innerHTML = `${styleDom.innerHTML}\n${content}\n`;
       }
-      hashCache.push(hashStr);
+      classCache.add(hashStr);
     }
     return hashStr;
   }
@@ -95,7 +89,7 @@ const getClass = (_style, _value) => {
   style = addBrowserPrefix(style);
   let hashStr = hash(style + value, options.hashCount);
   hashStr = options.formatClass(hashStr);
-  if (hashCache.includes(hashStr)) {
+  if (classCache.has(hashStr)) {
     return hashStr;
   }
 
@@ -112,7 +106,7 @@ const getClass = (_style, _value) => {
   } else {
     styleDom.innerHTML = `${styleDom.innerHTML}\n${styleText}\n`;
   }
-  hashCache.push(hashStr);
+  classCache.add(hashStr);
   return hashStr;
 };
 
@@ -156,7 +150,7 @@ export const preClass = (...array) => array.map(arr => getExistsClass(arr, false
 export const pseudo = (_className, pseudo, _styles) => {
   let hashStr = hash(`.${_className}:${pseudo}`, options.hashCount);
   hashStr = options.formatClass(hashStr);
-  if (hashCache.includes(hashStr)) {
+  if (classCache.has(hashStr)) {
     return hashStr;
   }
 
@@ -183,7 +177,7 @@ export const pseudo = (_className, pseudo, _styles) => {
 };
 
 export const animation = (name, content) => {
-  if (hashCache.includes(name)) {
+  if (classCache.has(name)) {
     return name;
   }
 
@@ -202,7 +196,7 @@ export const animation = (name, content) => {
   styleDom.id = name;
   styleDom.innerHTML = text;
   document.head.appendChild(styleDom);
-  hashCache.push(name);
+  classCache.add(name);
   return name;
 };
 
