@@ -59,6 +59,7 @@ const getStyleText = (styles, flag) => {
   }
   return `{${result}}`;
 };
+
 const getExistsClass = (_className) => {
   let styles = options.classes[_className];
   if (styles) {
@@ -112,7 +113,7 @@ const getClass = (_style, _value) => {
   return hashStr;
 };
 
-const selector = (_selector, _styles) => {
+export const selector = (_selector, _styles) => {
   let styles = getStyles(_styles);
   if (!styles) {
     return '';
@@ -137,7 +138,7 @@ const selector = (_selector, _styles) => {
   return '';
 };
 
-const css = (...array) => {
+export const css = (...array) => {
   const styles = getStyles(array);
   if (!styles) {
     return '';
@@ -146,9 +147,9 @@ const css = (...array) => {
   return styles.map(([style, value]) => getClass(style, value));
 };
 
-const classes = (...array) => array.map(arr => getExistsClass(arr));
+export const classes = (...array) => array.map(arr => getExistsClass(arr));
 
-const pseudo = (_className, pseudo, _styles) => {
+export const pseudo = (_className, pseudo, _styles) => {
   let hashStr = hash(`.${_className}:${pseudo}`, options.hashCount);
   hashStr = options.formatClass(hashStr);
   if (hashCache.includes(hashStr)) {
@@ -177,7 +178,7 @@ const pseudo = (_className, pseudo, _styles) => {
   return hashStr;
 };
 
-const animation = (name, content) => {
+export const animation = (name, content) => {
   if (hashCache.includes(name)) {
     return name;
   }
@@ -213,6 +214,7 @@ const install = (Vue, _options = {}) => {
       this.$class = classes;
       this.$pseudo = pseudo;
       this.$selector = selector;
+      this.$animation = animation;
     },
   });
 };
