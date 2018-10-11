@@ -213,6 +213,7 @@ const install = (Vue, _options = {}) => {
       this.$pseudo = pseudo;
       this.$selector = selector;
       this.$animation = animation;
+      this.$preClass = preClass;
     },
   });
 };
