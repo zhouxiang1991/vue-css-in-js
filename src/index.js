@@ -1,4 +1,4 @@
-import { kebabcase, chunk, hash, getBrowserPrefix, getCssStyles } from './utils';
+import { kebabcase, chunk, hash, getBrowserPrefix, getCssStyles, isObject, forEach, isArray } from './utils';
 
 const classCache = new Set();
 let options = {
@@ -145,7 +145,17 @@ export const css = (...array) => {
 };
 
 export const classes = (...array) => array.map(arr => getExistsClass(arr));
-export const preClass = (...array) => array.map(arr => getExistsClass(arr, false));
+export const preClass = (...array) => array.map((arr) => {
+  if (isObject(arr)) {
+    const classNameList = [];
+    forEach(arr, (v, k) => (v ? classNameList.push(k) : ''));
+    return preClass(...classNameList);
+  }
+  if (isArray(arr)) {
+    return preClass(...arr);
+  }
+  return getExistsClass(arr, false);
+});
 
 export const pseudo = (_className, pseudo, _styles) => {
   let hashStr = hash(`.${_className}:${pseudo}`, options.hashCount);

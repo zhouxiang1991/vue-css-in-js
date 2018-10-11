@@ -56,3 +56,40 @@ export const chunk = (array, size) => {
 };
 
 export const kebabcase = str => str.replace(/(?!^)([A-Z\u00C0-\u00D6])/g, match => `-${match.toLowerCase()}`);
+
+export const getType = (data) => {
+  return Object.prototype.toString.call(data).slice(8, -1);
+};
+
+export const isObject = (data) => {
+  const type = getType(data);
+  return type === 'Object';
+};
+
+export const isArray = (data) => {
+  const type = getType(data);
+  return type === 'Array';
+};
+
+export const isString = (data) => {
+  const type = getType(data);
+  return type === 'String';
+};
+
+/**
+ * 遍历数组或对象
+ *
+ * @name forEach
+ * @function
+ * @param {array | object} data - 数组或对象
+ * @param {function} cb - 回调函数
+ */
+const forEach = (data, cb) => {
+  if (isArray(data)) return data.forEach(cb);
+  if (!isObject(data)) return;
+  return Object.keys(data)
+    .map(k => ({ k, v: data[k] }))
+    .forEach(({ v, k }) => cb(v, k));
+};
+
+export default forEach;
