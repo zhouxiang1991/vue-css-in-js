@@ -1,13 +1,12 @@
 # vue-css-in-js
 该项目我个人的实验性的不太成熟的处理css样式的想法。灵感来源于css-modules。<br>
-在需要加样式的地方直接使用函数调用，动态修改style标签的样式内容，返回一个唯一的hash类名
+在需要加样式的地方直接使用函数调用，动态修改style标签的样式内容，返回一个唯一的hash类名<br>
 它主要解决了我的以下几个问题
-- 不用去想应该使用什么样的类名
+- 不用去思考使用什么样的类名
 - 不用去考虑类名重复的问题
 - 最大限度地复用类
 
-## 构造方法
-在vue中使用
+## 使用方法
 ```js
 import Vue form 'vue'
 import cssInJs from 'vue-css-in-js'
@@ -94,8 +93,8 @@ Vue.use(cssInJs, cssInJsOptions);
 第一个参数是已知存在的类名,虽然该类名没有写入到最终样式中，但是他的目的是为了计算出唯一的hash
 
 ## 例如
-```js
-pseudo('existsClass', 'first-child', ['color', 'red'])
+```html
+<div :class="pseudo('existsClass', 'first-child', ['color', 'red'])">123</div>
 ```
 1. 生成样式字符串`.existsClass:first-child { color: red }`
 2. 对该样式字符串生成`hash`作为唯一标示。例如：`DGT31`
@@ -106,20 +105,21 @@ pseudo('existsClass', 'first-child', ['color', 'red'])
   color: red;
 }
 </style>
+<div class="DGT31">123</div>
 ```
 
 ### selector
 这个函数为了写入选择器样式，不会有返回值
 ## 例如
 ```js
-selector('div', ['color', 'red'])
+selector('testSelector', ['color', 'red'])
 ```
-1. 生成样式字符串`div { color: red }`
+1. 生成样式字符串`testSelector { color: red }`
 2. 对该样式字符串生成`hash`作为唯一标示。例如：`Hd21G`
-3. 这里有全局变量`Set`类型, 查询`Set`中是否有`Hd21G`，如果有就什么也不做，如果没有就在`style`标签中加入`div { color: red }`, 然后将该类名加入`Set`中。
+3. 这里有全局变量`Set`类型, 查询`Set`中是否有`Hd21G`，如果有就什么也不做，如果没有就在`style`标签中加入`testSelector { color: red }`, 然后将该类名加入`Set`中。
 ```html
 <style>
-div {
+testSelector {
   color: red;
 }
 </style>
