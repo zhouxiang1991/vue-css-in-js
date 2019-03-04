@@ -54,6 +54,7 @@ Vue.use(cssInJs, cssInJsOptions);
 ## 方法
 ### css
 这个函数处理样式返回类名
+
 ##例如
 ```html
 <div :class="$css('color', 'red')">123</div>
@@ -70,6 +71,7 @@ Vue.use(cssInJs, cssInJsOptions);
 
 ### classes
 如果有提供一些预定义的类可以使用这个方法
+
 ##例如
 ```html
 <div :class="$classes('testClass1', 'testClass2')">123</div>
@@ -90,6 +92,7 @@ Vue.use(cssInJs, cssInJsOptions);
 ### pseudo
 这个函数是为了写入伪类样式
 第一个参数是已知存在的类名,虽然该类名没有写入到最终样式中，但是他的目的是为了计算出唯一的hash
+
 ##例如
 ```js
 pseudo('existsClass', 'first-child', ['color', 'red'])
@@ -107,6 +110,7 @@ pseudo('existsClass', 'first-child', ['color', 'red'])
 
 ### selector
 这个函数为了写入选择器样式，不会有返回值
+
 ##例如
 ```js
 selector('div', ['color', 'red'])
@@ -124,6 +128,7 @@ div {
 
 ### animation
 这个函数是为了写入动画，且没有返回值
+
 ##例如
 ```js
 animation('testAnimation', [
